@@ -1,14 +1,20 @@
-import React from "react"
+import React, { useContext } from "react"
+
+import LocationContext from "../contexts/location"
+import AppStateContext from "../contexts/app-state"
 
 import DayCard from "./DayCard"
 
 export default props => {
-    const { city_name, timezone, country_code, state_code } = props.request
+    const LocationC = useContext(LocationContext)
+    const AppStateC = useContext(AppStateContext)
 
-    if(!props.location) {
+    const { city_name, timezone, country_code, state_code } = AppStateC.request
+
+    if(!LocationC.location) {
         return <></>
     }
-    else if (props.activeCity < 0 || props.activeCity >= props.cities.length) {
+    else if (AppStateC.activeCity < 0 || AppStateC.activeCity >= AppStateC.cities.length) {
         return (
             <div className="city-info-container">
                 <h2>Click on a city to view its weather info</h2>
@@ -30,12 +36,12 @@ export default props => {
                     <h2>16 day forecast</h2>
                     <div className="daily-cards-container">
                         {
-                            props.request.data && props.request.data.map((day, index) =>
+                            AppStateC.request.data && AppStateC.request.data.map((day, index) =>
                                 <DayCard
                                     key={index}
                                     data={day}
-                                    onClick={_ => props.setActiveCard(index === props.activeCard ? -1 : index)}
-                                    active={index === props.activeCard}
+                                    onClick={_ => AppStateC.setActiveCard(index === AppStateC.activeCard ? -1 : index)}
+                                    active={index === AppStateC.activeCard}
                                 />
                             )
                         }

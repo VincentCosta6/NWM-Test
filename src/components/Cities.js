@@ -1,9 +1,15 @@
-import React from "react"
+import React, { useContext } from "react"
 
-import City from "./City"
+import { Card, CardHeader } from "@material-ui/core"
+
+import AppStateContext from "../contexts/app-state"
+import LocationContext from "../contexts/location"
 
 export default props => {
-    if(!props.location) {
+    const appStateC = useContext(AppStateContext)
+    const locationC = useContext(LocationContext)
+
+    if(!locationC.location) {
         return (
             <div className="city-info-container">
                 <h2>Location permissions are required to use this API</h2>
@@ -16,12 +22,12 @@ export default props => {
                 <h2>Cities: </h2>
                 <div className="cities">
                     {
-                        props.cities && props.cities.map((city, index) => 
+                        appStateC.cities && appStateC.cities.map((city, index) => 
                             <City 
                                 key = {index} 
                                 city = {city}
-                                onClick = {_ => props.handleCityClicked(index)} 
-                                active = {index === props.activeCity} 
+                                onClick = {_ => appStateC.handleCityClicked(index)} 
+                                active = {index === appStateC.activeCity} 
                             />
                         )
                     }
@@ -29,4 +35,14 @@ export default props => {
             </>
         )
     }
+}
+
+const City = props => {
+    const classStr = props.active ? "city active" : "city"
+
+    return (
+        <Card className = {classStr} onClick = {props.onClick}>
+            <CardHeader title={props.city.name || "Fallbrook"} />
+        </Card>
+    )
 }

@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 
 import Cities from "./Cities"
 import CityInfo from "./CityInfo"
 import ExpandedInfo from "./ExpandedInfo"
+
+import AppStateContext from "../contexts/app-state"
+import LocationContext from "../contexts/location"
 
 const base_url = "https://api.weatherbit.io/v2.0"
 
@@ -11,24 +14,25 @@ const localData = {
 }
 
 export default props => {
+    const LocationC = useContext(LocationContext)
+
     const [request, setRequest] = useState({})
 
     const [activeCity, setActiveCity] = useState(-1)
     const [activeCard, setActiveCard] = useState(-1)
 
-    const [cityField, setCityField] = useState("")
     const [cities, setCities] = useState([
         { name: "My location" }
     ])
 
     useEffect(_ => {
-        if (props.location && props.location.coords && props.location.coords.latitude && props.location.coords.longitude) {
+        if (LocationC.location && LocationC.location.coords && LocationC.location.coords.latitude && LocationC.location.coords.longitude) {
             fetchData()
         }
-    }, [props, props.location])
+    }, [LocationC, LocationC.location])
 
     const fetchData = _ => {
-        const { latitude, longitude } = props.location.coords
+        const { latitude, longitude } = LocationC.location.coords
 
         if (localData.use) {
             console.log("Use local")
@@ -72,21 +76,20 @@ export default props => {
 
     return (
         <div className="container">
-            <Cities
-                location = {props.location}
-                cities = {cities}
-                handleCityClicked = {handleCityClicked}
-            />
+            <AppStateContext.Provider value = {{ 
+                    activeCity, 
+                    activeCard, 
+                    setActiveCity, 
+                    setActiveCard, 
+                    cities, 
+                    handleCityClicked, 
+                    request, 
+                    setRequest 
+                }}>
+                <Cities />
 
-            <CityInfo 
-                location = {props.location}
-                activeCity = {activeCity}
-                activeCard = {activeCard}
-                cities = {cities}
-                request = {request}
-                setActiveCard = {setActiveCard}
-                _renderExpanded = {_renderExpanded}
-            />
+                <CityInfo _renderExpanded = {_renderExpanded} />
+            </AppStateContext.Provider>
         </div>
     )
 }

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+import LocationContext from "./contexts/location"
+
 import Header from "./components/Header"
 import Container from "./components/Container"
 
@@ -29,7 +31,10 @@ const App = _ => {
     return (
         <div className="App">
             <Header />
-            <Container location = {location} />
+
+            <LocationContext.Provider value = {{ location, setLocation }}>
+                <Container />
+            </LocationContext.Provider>
         </div>
     )
 }
