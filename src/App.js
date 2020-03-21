@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from "./components/Header"
+import Container from "./components/Container"
+
+import { key } from "./api_key.json"
+
+window._key = key
+
+const locationSettings = {
+    enableHighAccuracy: true
+}
+
+const App = _ => {
+    useEffect(_ => {
+        navigator.geolocation.getCurrentPosition(locationSuccess, locationFailure, locationSettings)
+    }, [])
+
+    const [location, setLocation] = useState()
+
+    const locationSuccess = location => {
+        setLocation(location)
+
+        localStorage.setItem("location", JSON.stringify({
+            lat: location.coords.latitude,
+            lon: location.coords.longitude
+        }))
+    }
+
+    const locationFailure = err => {
+        console.log("Failed location request")
+        console.log(err)
+    }
+
+    return (
+        <div className="App">
+            <Header />
+            <Container location = {location} />
+        </div>
+    )
 }
 
 export default App;
