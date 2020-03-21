@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react"
 
+import { Card, CardHeader, CardMedia, CardContent } from "@material-ui/core"
+
 const indexToDay = {
     0: "Sunday",
     1: "Monday",
@@ -22,7 +24,7 @@ export default props => {
 
     useEffect(parseData, [])
     
-    const celsiusToFarenheit = celsius => (celsius * (9 / 5)) + 32
+    const celsiusToFarenheit = celsius => ((celsius * (9 / 5)) + 32).toFixed(1) + "° F"
     
     const getShortenedDayName = yyyymmdd => {
         const strings = yyyymmdd.split("-")
@@ -41,11 +43,12 @@ export default props => {
     const day = date_split[2]
 
     return (
-        <div className = "card" onClick = {props.onClick}>
-            <h6>{month}/{day}</h6>
-            <h5>{getShortenedDayName(valid_date)}</h5>
-            <img src = "" alt = {description} height = "50" width = "50" />
-            <h4>{celsiusToFarenheit(high_temp).toFixed(1)}° F</h4>
-        </div>
+        <Card className = {props.active ? "card active" : "card"} onClick = {props.onClick}>
+            <CardHeader title = {getShortenedDayName(valid_date)} subheader = {`${month}/${day}`} />
+            <img src = {`/icons/${icon}.png`} alt = {description} height = {50} width = {50} />
+            <CardContent>
+                <h4>{celsiusToFarenheit(high_temp)}</h4>
+            </CardContent>
+        </Card>
     )
 }

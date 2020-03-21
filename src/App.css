@@ -8,28 +8,41 @@
     display: flex;
     align-items: center;
     height: 8%;
-    background-color: black;
-    color: white
+    background-color: white;
 }
 
 .header h1 {
     margin: 2%;
+    font-size: 1.5rem;
+}
+
+.header h3 {
+    font-size: 1.2rem;
 }
 
 .container {
     flex: 1 1 auto;
-    background-color: rgba(0, 255, 0, 0.2)
+    background-color: #eee
 }
 
 .daily-cards {
     display: flex;
     flex-direction: column;
+    overflow-y: hidden;
+    background-color: inherit;
+    margin: 15px;
+}
+
+.daily-cards h2 {
+    font-size: 1.4rem;
 }
 
 .daily-cards-container {
     display: flex;
+    flex: 1;
     width: 100%;
-    overflow-x: auto;
+    overflow: auto;
+    overflow-y: hidden;
 }
 
 .card {
@@ -40,6 +53,64 @@
     border: 1px solid black;
     cursor: pointer;
     margin: 15px;
-    width: 200px;
-    height: 200px;
+    min-height: 200px;
+    min-width: 80px;
+
+    transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.1, 1.1);
+}
+
+.card.active {
+    border: 1px solid blue;
+}
+
+
+
+.cities {
+    display: flex;
+    overflow: auto;
+    overflow-y: hidden;
+}
+
+.city {
+    cursor: pointer;
+    margin: 0 10px 0 10px;
+    transition: all 0.2s ease-in-out;
+    margin: 15px;
+}
+
+.city:hover {
+    transform: scale(1.1, 1.1);
+}
+
+.city.active {
+    border: 1px solid blue;
+}
+
+.city-info-container {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    margin: 15px;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: white;
+}
+
+.city-info-container h1 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.city-info-container h2 {
+    margin: 10px 0 10px 0;
+    font-size: 1.3rem;
+}
+
+.city-info-container h3 {
+    margin: 10px 0 10px 0;
+    font-size: 1.3rem;
 }
