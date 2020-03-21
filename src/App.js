@@ -4,9 +4,7 @@ import './App.css';
 import Header from "./components/Header"
 import Container from "./components/Container"
 
-import { key } from "./api_key.json"
-
-window._key = key
+window._key = "ee335d2f11e14b208e0a1172aaec60e5"
 
 const locationSettings = {
     enableHighAccuracy: true

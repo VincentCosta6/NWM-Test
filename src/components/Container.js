@@ -2,7 +2,7 @@ import React, { useEffect, useState, createContext } from "react"
 
 import { TextField, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton } from "@material-ui/core"
 
-import Cities from "./Cities"
+import City from "./City"
 import DayCard from "./DayCard"
 import ExpandedInfo from "./ExpandedInfo"
 
@@ -14,14 +14,14 @@ const localData = {
 
 export default props => {
     const [request, setRequest] = useState({})
+
     const [activeCity, setActiveCity] = useState(-1)
     const [activeCard, setActiveCard] = useState(-1)
-    const [cityField, setCityField] = useState("")
-    const [cities, setCities] = useState([])
 
-    useEffect(_ => {
-        setCities([{ name: "Your location" }])
-    }, [])
+    const [cityField, setCityField] = useState("")
+    const [cities, setCities] = useState([
+        { name: "My location" }
+    ])
 
     useEffect(_ => {
         if (props.location && props.location.coords && props.location.coords.latitude && props.location.coords.longitude) {
@@ -56,13 +56,50 @@ export default props => {
         console.log(err)
     }
 
-    const addCity = _ => {
-        setCityField("")
+    const handleCityClicked = index => {
+        setActiveCard(-1)
+        setActiveCity(index === activeCity ? -1 : index)
+    }
+
+    const _renderCities = _ => {
+        if(!props.location) {
+            return (
+                <div className="city-info-container">
+                    <h2>Location permissions are required to use this API</h2>
+                </div>
+            )
+        }
+        else {
+            return (
+                <>
+                    <h2>Cities: </h2>
+                    <div className="cities">
+                        {
+                            cities && cities.map((city, index) => 
+                                <City 
+                                    key = {index} 
+                                    city = {city}
+                                    onClick = {_ => handleCityClicked(index)} 
+                                    active = {index === activeCity} 
+                                />
+                            )
+                        }
+                    </div>
+                </>
+            )
+        }
     }
 
     const _renderCityInfo = _ => {
-        if (activeCity < 0 || activeCity >= cities.length) {
-            return <h3>Click on a city to view its weather info</h3>
+        if(!props.location) {
+            return <></>
+        }
+        else if (activeCity < 0 || activeCity >= cities.length) {
+            return (
+                <div className="city-info-container">
+                    <h2>Click on a city to view its weather info</h2>
+                </div>
+            )
         }
         else {
             return (
@@ -98,7 +135,11 @@ export default props => {
 
     const _renderExpanded = _ => {
         if (activeCard < 0 || activeCard >= request.data.length) {
-            return <h3>Click on a day to view more info</h3>
+            return (
+                <div className="city-info-container">
+                    <h3>Click on a day to view more info</h3>
+                </div>
+            )
         }
         else {
             return <ExpandedInfo active={activeCard} data={request.data[activeCard]} />
@@ -109,41 +150,9 @@ export default props => {
 
     return (
         <div className="container">
-            <TextField
-                fullWidth
-                variant="outlined"
-                label="Add a city"
-                value={cityField}
-                onChange={event => setCityField(event.target.value)}
-                onKeyPress={event => {
-                    if (event.key === "Enter") addCity()
-                }}
-            />
+            { _renderCities() }
 
-            <h2>Cities: </h2>
-
-            <div className="cities">
-                {
-                    cities && cities.map((city, index) => {
-                        return (
-                            <div className={"city" + (index === activeCity ? " active" : "")} key={index} onClick={_ => {
-                                setActiveCard(-1)
-                                setActiveCity(index === activeCity ? -1 : index)
-                            }}>
-                                <Card>
-                                    <CardActions>
-
-                                    </CardActions>
-                                    <CardHeader title={city.name || "Fallbrook"} />
-
-                                </Card>
-                            </div>
-                        )
-                    })
-                }
-            </div>
-
-            {_renderCityInfo()}
+            { _renderCityInfo() }
         </div>
     )
 }
