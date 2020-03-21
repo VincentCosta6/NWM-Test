@@ -4,11 +4,14 @@ import './App.css';
 import Header from "./components/Header"
 import Container from "./components/Container"
 
-if(process.env.NODE_ENV) {
+if(process.env.NODE_ENV && process.env.NODE_ENV === "development") {
     import("./api_key.json")
         .then(data => {
             window._key = data.key || ""
         })
+}
+else {
+    console.log(process.env)
 }
 //console.log(process.env.NODE_ENV)
 

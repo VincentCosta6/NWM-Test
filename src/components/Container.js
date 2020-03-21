@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
 
+import { TextField } from "@material-ui/core"
+
 import DayCard from "./DayCard"
 import ExpandedInfo from "./ExpandedInfo"
 
@@ -12,6 +14,12 @@ const localData = {
 export default props => {
     const [request, setRequest] = useState({})
     const [active, setActive] = useState(-1)
+    const [cityField, setCityField] = useState("")
+    const [cities, setCities] = useState([])
+
+    useEffect(_ => {
+        setCities(JSON.parse(localStorage.getItem("cities")))
+    }, [])
 
     useEffect(_ => {
         if (props.location && props.location.coords && props.location.coords.latitude && props.location.coords.longitude) {
@@ -46,6 +54,10 @@ export default props => {
         console.log(err)
     }
 
+    const addCity = _ => {
+        setCityField("")
+    }
+
     const _renderExpanded = _ => {
         if(active < 0 || active >= request.data.length) {
             return <h3>Click on a day to view more info</h3>
@@ -59,6 +71,17 @@ export default props => {
 
     return (
         <div className="container">
+            <TextField 
+                fullWidth
+                variant = "outlined" 
+                label = "Add a city"
+                value = {cityField} 
+                onChange = {event => setCityField(event.target.value)} 
+                onKeyPress = {event => {
+                    if(event.key === "Enter") addCity()
+                }} 
+            />
+
             <h2>City: {city_name}</h2>
             <h2>Timezone: {timezone}</h2>
             <h2>Country: {country_code}</h2>
