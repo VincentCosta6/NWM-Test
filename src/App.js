@@ -4,9 +4,13 @@ import './App.css';
 import Header from "./components/Header"
 import Container from "./components/Container"
 
-import { key } from "./api_key.json"
-
-window._key = key
+if(process.env.NODE_ENV) {
+    import("./api_key.json")
+        .then(data => {
+            window._key = data.key || ""
+        })
+}
+//console.log(process.env.NODE_ENV)
 
 const locationSettings = {
     enableHighAccuracy: true
