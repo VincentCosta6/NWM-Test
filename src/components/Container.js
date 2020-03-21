@@ -1,9 +1,7 @@
-import React, { useEffect, useState, createContext } from "react"
+import React, { useEffect, useState } from "react"
 
-import { TextField, Card, CardHeader, CardMedia, CardContent, CardActions, IconButton } from "@material-ui/core"
-
-import City from "./City"
-import DayCard from "./DayCard"
+import Cities from "./Cities"
+import CityInfo from "./CityInfo"
 import ExpandedInfo from "./ExpandedInfo"
 
 const base_url = "https://api.weatherbit.io/v2.0"
@@ -47,8 +45,6 @@ export default props => {
     }
 
     const dataSuccess = data => {
-        console.log(data)
-
         setRequest(data)
     }
 
@@ -59,78 +55,6 @@ export default props => {
     const handleCityClicked = index => {
         setActiveCard(-1)
         setActiveCity(index === activeCity ? -1 : index)
-    }
-
-    const _renderCities = _ => {
-        if(!props.location) {
-            return (
-                <div className="city-info-container">
-                    <h2>Location permissions are required to use this API</h2>
-                </div>
-            )
-        }
-        else {
-            return (
-                <>
-                    <h2>Cities: </h2>
-                    <div className="cities">
-                        {
-                            cities && cities.map((city, index) => 
-                                <City 
-                                    key = {index} 
-                                    city = {city}
-                                    onClick = {_ => handleCityClicked(index)} 
-                                    active = {index === activeCity} 
-                                />
-                            )
-                        }
-                    </div>
-                </>
-            )
-        }
-    }
-
-    const _renderCityInfo = _ => {
-        if(!props.location) {
-            return <></>
-        }
-        else if (activeCity < 0 || activeCity >= cities.length) {
-            return (
-                <div className="city-info-container">
-                    <h2>Click on a city to view its weather info</h2>
-                </div>
-            )
-        }
-        else {
-            return (
-                <>
-                    <div className="city-info-container">
-                        <h1>City info</h1>
-                        <h2>City: {city_name}</h2>
-                        <h2>Timezone: {timezone}</h2>
-                        <h2>Country: {country_code}</h2>
-                        <h2>State: {state_code}</h2>
-                    </div>
-
-                    <div className="daily-cards">
-                        <h2>16 day forecast</h2>
-                        <div className="daily-cards-container">
-                            {
-                                request.data && request.data.map((day, index) =>
-                                    <DayCard
-                                        key={index}
-                                        data={day}
-                                        onClick={_ => setActiveCard(index === activeCard ? -1 : index)}
-                                        active={index === activeCard}
-                                    />
-                                )
-                            }
-                        </div>
-                        {_renderExpanded()}
-                    </div>
-                </>
-            )
-        }
     }
 
     const _renderExpanded = _ => {
@@ -146,13 +70,23 @@ export default props => {
         }
     }
 
-    const { city_name, timezone, country_code, state_code } = request
-
     return (
         <div className="container">
-            { _renderCities() }
+            <Cities
+                location = {props.location}
+                cities = {cities}
+                handleCityClicked = {handleCityClicked}
+            />
 
-            { _renderCityInfo() }
+            <CityInfo 
+                location = {props.location}
+                activeCity = {activeCity}
+                activeCard = {activeCard}
+                cities = {cities}
+                request = {request}
+                setActiveCard = {setActiveCard}
+                _renderExpanded = {_renderExpanded}
+            />
         </div>
     )
 }
