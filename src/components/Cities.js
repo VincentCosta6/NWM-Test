@@ -3,6 +3,7 @@ import React, { useContext } from "react"
 import { Card, CardHeader, CardActionArea } from "@material-ui/core"
 
 import AddCity from "./AddCity"
+import CancelIcon from '@material-ui/icons/CancelOutlined';
 
 import AppStateContext from "../contexts/app-state"
 import LocationContext from "../contexts/location"
@@ -29,6 +30,7 @@ export default props => {
                                 key = {index} 
                                 city = {city}
                                 onClick = {_ => appStateC.handleCityClicked(index)} 
+                                removeCity = {_ => appStateC.removeCity(index)}
                                 active = {index === appStateC.activeCity} 
                                 isFirst = {index === 0}
                             />
@@ -46,9 +48,12 @@ const City = props => {
 
     return (
         <Card className = {classStr} onClick = {props.onClick}>
-            <CardActionArea>
-                
-            </CardActionArea>
+            {
+                !props.isFirst && <CardActionArea>
+                    <CancelIcon style = {{ float: "right", right: 0, position: "absolute" }} color = "secondary" size = {17} onClick = {props.removeCity} />
+                </CardActionArea>
+            }
+            
             <CardHeader title={props.city.name || "Fallbrook"} />
         </Card>
     )

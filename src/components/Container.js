@@ -61,6 +61,10 @@ export default props => {
         setCities([...cities, extractedData])
     }
 
+    const removeCity = index => {
+        setCities(cities.slice().splice(index, 1))
+    }
+
     const dataSuccess = data => {
         setRequest(data)
     }
@@ -96,6 +100,7 @@ export default props => {
                 setActiveCard, 
                 cities, 
                 addCity,
+                removeCity,
                 handleCityClicked, 
                 request, 
                 setRequest

@@ -76,9 +76,8 @@ export default props => {
             <Dialog
                 open = {dialogVisible}
                 onClose = {handleDialogClose}
-                aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Add city</DialogTitle>
+                <DialogTitle>Add city</DialogTitle>
                 <DialogContent>
                     <TextField
                         label = "City name"

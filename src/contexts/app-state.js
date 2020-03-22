@@ -9,7 +9,7 @@ export default createContext({
 
     cities: [{ name: "My location" }],
     addCity: extractedData => {},
-    removeCity: _ => {},
+    removeCity: index => {},
 
     request: {}
 })
