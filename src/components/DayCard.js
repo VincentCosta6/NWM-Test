@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 
-import { Card, CardHeader, CardMedia, CardContent } from "@material-ui/core"
+import { 
+    Card, 
+    CardHeader, 
+    CardContent 
+} from "@material-ui/core"
 
 const indexToDay = {
     0: "Sunday",
@@ -15,22 +19,15 @@ const indexToDay = {
 export default props => {
     const { high_temp, weather, valid_date } = props.data
     const { description, icon } = weather
-
-    const [parsed, setParsed] = useState({  })
-
-    const parseData = _ => {
-        
-    }
-
-    useEffect(parseData, [])
     
     const celsiusToFarenheit = celsius => ((celsius * (9 / 5)) + 32).toFixed(1) + "° F"
     
+    // Early on was doing thorough error handling but had some things come up and time became short
     const getShortenedDayName = yyyymmdd => {
         const strings = yyyymmdd.split("-")
         
         if(strings.length !== 3) {
-            console.error(`String received: ${yyyymmdd} is not proper`)
+            console.error(`String received: ${yyyymmdd} is not proper format needs to be yyyy-mm-dd`)
         }
         
         const date = new Date(strings[0], strings[1], strings[2])

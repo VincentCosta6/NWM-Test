@@ -1,5 +1,7 @@
 import React, { useContext } from "react"
 
+import ExpandedInfo from "./ExpandedInfo"
+
 import LocationContext from "../contexts/location"
 import AppStateContext from "../contexts/app-state"
 
@@ -11,6 +13,22 @@ export default props => {
 
     const { city_name, timezone, country_code, state_code } = AppStateC.request
 
+    // If activeIndex falls outside of range of days then tell the user to select a day
+    // Otherwise render the expanded info here
+    const _renderExpanded = _ => {
+        if (AppStateC.activeCard < 0 || AppStateC.activeCard >= AppStateC.request.data.length) {
+            return (
+                <div className="city-info-container">
+                    <h3>Click on a day to view more info</h3>
+                </div>
+            )
+        }
+        else {
+            return <ExpandedInfo active={AppStateC.activeCard} data={AppStateC.request.data[AppStateC.activeCard]} />
+        }
+    }
+
+    // If location is not shared dont bother rendering anything see my comment in Cities.js
     if(!LocationC.location) {
         return <></>
     }
@@ -46,7 +64,7 @@ export default props => {
                             )
                         }
                     </div>
-                    {props._renderExpanded()}
+                    {_renderExpanded()}
                 </div>
             </>
         )

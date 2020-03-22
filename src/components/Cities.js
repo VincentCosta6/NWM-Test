@@ -1,6 +1,13 @@
 import React, { useContext } from "react"
 
-import { Card, CardHeader } from "@material-ui/core"
+import { 
+    Card, 
+    CardHeader, 
+    CardActionArea 
+} from "@material-ui/core"
+
+import AddCity from "./AddCity"
+import CancelIcon from '@material-ui/icons/CancelOutlined';
 
 import AppStateContext from "../contexts/app-state"
 import LocationContext from "../contexts/location"
@@ -9,6 +16,8 @@ export default props => {
     const appStateC = useContext(AppStateContext)
     const locationC = useContext(LocationContext)
 
+    // Decided to not allow the user to use the app unless they share location
+    // In a real application i would just hide the user location option if they didnt allow it
     if(!locationC.location) {
         return (
             <div className="city-info-container">
@@ -27,21 +36,34 @@ export default props => {
                                 key = {index} 
                                 city = {city}
                                 onClick = {_ => appStateC.handleCityClicked(index)} 
+                                removeCity = {event => {
+                                    event.stopPropagation()
+                                    appStateC.removeCity(index)
+                                }}
                                 active = {index === appStateC.activeCity} 
+                                isFirst = {index === 0}
                             />
                         )
                     }
+                    <AddCity />
                 </div>
             </>
         )
     }
 }
 
+// Decided to keep this component in cities since it is so small and not used anywhere else
 const City = props => {
     const classStr = props.active ? "city active" : "city"
 
     return (
         <Card className = {classStr} onClick = {props.onClick}>
+            {
+                !props.isFirst && <CardActionArea>
+                    <CancelIcon style = {{ float: "right", right: 0, position: "absolute" }} color = "secondary" size = {17} onClick = {props.removeCity} />
+                </CardActionArea>
+            }
+            
             <CardHeader title={props.city.name || "Fallbrook"} />
         </Card>
     )
