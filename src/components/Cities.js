@@ -1,6 +1,8 @@
 import React, { useContext } from "react"
 
-import { Card, CardHeader } from "@material-ui/core"
+import { Card, CardHeader, CardActionArea } from "@material-ui/core"
+
+import AddCity from "./AddCity"
 
 import AppStateContext from "../contexts/app-state"
 import LocationContext from "../contexts/location"
@@ -28,9 +30,11 @@ export default props => {
                                 city = {city}
                                 onClick = {_ => appStateC.handleCityClicked(index)} 
                                 active = {index === appStateC.activeCity} 
+                                isFirst = {index === 0}
                             />
                         )
                     }
+                    <AddCity />
                 </div>
             </>
         )
@@ -42,6 +46,9 @@ const City = props => {
 
     return (
         <Card className = {classStr} onClick = {props.onClick}>
+            <CardActionArea>
+                
+            </CardActionArea>
             <CardHeader title={props.city.name || "Fallbrook"} />
         </Card>
     )

@@ -6,7 +6,10 @@ export default createContext({
 
     setActiveCity: _ => {},
     setActiveCard: _ => {},
+
     cities: [{ name: "My location" }],
+    addCity: extractedData => {},
+    removeCity: _ => {},
 
     request: {}
 })

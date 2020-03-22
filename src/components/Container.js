@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 
+import { TextField } from "@material-ui/core"
+
 import Cities from "./Cities"
 import CityInfo from "./CityInfo"
 import ExpandedInfo from "./ExpandedInfo"
@@ -7,11 +9,7 @@ import ExpandedInfo from "./ExpandedInfo"
 import AppStateContext from "../contexts/app-state"
 import LocationContext from "../contexts/location"
 
-const base_url = "https://api.weatherbit.io/v2.0"
-
-const localData = {
-    use: false,
-}
+window._base_url = "https://api.weatherbit.io/v2.0"
 
 export default props => {
     const LocationC = useContext(LocationContext)
@@ -22,30 +20,45 @@ export default props => {
     const [activeCard, setActiveCard] = useState(-1)
 
     const [cities, setCities] = useState([
-        { name: "My location" }
+        { name: "My location" },
+        ...JSON.parse(localStorage.getItem("cities") || "[]")
     ])
 
     useEffect(_ => {
-        if (LocationC.location && LocationC.location.coords && LocationC.location.coords.latitude && LocationC.location.coords.longitude) {
-            fetchData()
+        let latitude = null, longitude = null
+
+        if(activeCity === 0) {
+            latitude = LocationC.location.coords.latitude
+            longitude = LocationC.location.coords.longitude
         }
-    }, [LocationC, LocationC.location])
-
-    const fetchData = _ => {
-        const { latitude, longitude } = LocationC.location.coords
-
-        if (localData.use) {
-            console.log("Use local")
+        else if(activeCity > 0) {
+            latitude = cities[activeCity].lat
+            longitude = cities[activeCity].lon
         }
         else {
-            fetch(`${base_url}/forecast/daily?lat=${latitude}&lon=${longitude}&key=${window._key}`)
+            return
+        }
+
+        fetchData(latitude, longitude)
+            .then(dataSuccess)
+            .catch(dataFailed)
+    }, [activeCity])
+
+    // Returning a promise because if we just returned the fetch we wouldnt be able to override the .then to always include the .json() parsing
+    const fetchData = (latitude, longitude) => 
+        new Promise(function(resolve, reject) {
+            fetch(`${window._base_url}/forecast/daily?lat=${latitude}&lon=${longitude}&key=${window._key}`)
                 .then(req =>
                     req.json()
-                        .then(dataSuccess)
-                        .catch(dataFailed)
+                        .then(resolve)
+                        .catch(reject)
                 )
-                .catch(dataFailed)
-        }
+                .catch(reject)
+        })
+
+    const addCity = extractedData => {
+        console.log([...cities, extractedData])
+        setCities([...cities, extractedData])
     }
 
     const dataSuccess = data => {
@@ -77,15 +90,16 @@ export default props => {
     return (
         <div className="container">
             <AppStateContext.Provider value = {{ 
-                    activeCity, 
-                    activeCard, 
-                    setActiveCity, 
-                    setActiveCard, 
-                    cities, 
-                    handleCityClicked, 
-                    request, 
-                    setRequest 
-                }}>
+                activeCity, 
+                activeCard, 
+                setActiveCity, 
+                setActiveCard, 
+                cities, 
+                addCity,
+                handleCityClicked, 
+                request, 
+                setRequest
+            }}>
                 <Cities />
 
                 <CityInfo _renderExpanded = {_renderExpanded} />
