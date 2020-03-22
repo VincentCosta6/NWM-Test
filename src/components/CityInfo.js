@@ -1,5 +1,7 @@
 import React, { useContext } from "react"
 
+import ExpandedInfo from "./ExpandedInfo"
+
 import LocationContext from "../contexts/location"
 import AppStateContext from "../contexts/app-state"
 
@@ -10,6 +12,19 @@ export default props => {
     const AppStateC = useContext(AppStateContext)
 
     const { city_name, timezone, country_code, state_code } = AppStateC.request
+
+    const _renderExpanded = _ => {
+        if (AppStateC.activeCard < 0 || AppStateC.activeCard >= AppStateC.request.data.length) {
+            return (
+                <div className="city-info-container">
+                    <h3>Click on a day to view more info</h3>
+                </div>
+            )
+        }
+        else {
+            return <ExpandedInfo active={AppStateC.activeCard} data={AppStateC.request.data[AppStateC.activeCard]} />
+        }
+    }
 
     if(!LocationC.location) {
         return <></>
@@ -46,7 +61,7 @@ export default props => {
                             )
                         }
                     </div>
-                    {props._renderExpanded()}
+                    {_renderExpanded()}
                 </div>
             </>
         )

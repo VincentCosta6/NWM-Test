@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 
-import { TextField } from "@material-ui/core"
-
 import Cities from "./Cities"
 import CityInfo from "./CityInfo"
-import ExpandedInfo from "./ExpandedInfo"
 
 import AppStateContext from "../contexts/app-state"
 import LocationContext from "../contexts/location"
@@ -15,13 +12,13 @@ export default props => {
     const LocationC = useContext(LocationContext)
 
     const [request, setRequest] = useState({})
+    const [requestLoading, setRequestLoading] = useState(false)
 
     const [activeCity, setActiveCity] = useState(-1)
     const [activeCard, setActiveCard] = useState(-1)
 
     const [cities, setCities] = useState([
-        { name: "My location" },
-        ...JSON.parse(localStorage.getItem("cities") || "[]")
+        ...JSON.parse(localStorage.getItem("cities") || "[{ \"name\": \"My location\" }]")
     ])
 
     useEffect(_ => {
@@ -39,6 +36,7 @@ export default props => {
             return
         }
 
+        setRequestLoading(true)
         fetchData(latitude, longitude)
             .then(dataSuccess)
             .catch(dataFailed)
@@ -57,20 +55,30 @@ export default props => {
         })
 
     const addCity = extractedData => {
-        console.log([...cities, extractedData])
-        setCities([...cities, extractedData])
+        const newCities = [...cities, extractedData]
+
+        localStorage.setItem("cities", JSON.stringify(newCities))
+
+        setCities(newCities)
     }
 
     const removeCity = index => {
-        setCities(cities.slice().splice(index, 1))
+        const newCities = [...cities]
+        newCities.splice(index, 1)
+
+        localStorage.setItem("cities", JSON.stringify(newCities))
+
+        setCities(newCities)
     }
 
     const dataSuccess = data => {
         setRequest(data)
+        setRequestLoading(false)
     }
 
     const dataFailed = err => {
         console.log(err)
+        setRequestLoading(false)
     }
 
     const handleCityClicked = index => {
@@ -78,17 +86,9 @@ export default props => {
         setActiveCity(index === activeCity ? -1 : index)
     }
 
-    const _renderExpanded = _ => {
-        if (activeCard < 0 || activeCard >= request.data.length) {
-            return (
-                <div className="city-info-container">
-                    <h3>Click on a day to view more info</h3>
-                </div>
-            )
-        }
-        else {
-            return <ExpandedInfo active={activeCard} data={request.data[activeCard]} />
-        }
+    const _renderLoading = _ => {
+        if(requestLoading) return <h2>Loading request...</h2>
+        else return <CityInfo />
     }
 
     return (
@@ -107,7 +107,7 @@ export default props => {
             }}>
                 <Cities />
 
-                <CityInfo _renderExpanded = {_renderExpanded} />
+                { _renderLoading() }
             </AppStateContext.Provider>
         </div>
     )

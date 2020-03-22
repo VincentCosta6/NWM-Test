@@ -79,6 +79,10 @@ export default props => {
             >
                 <DialogTitle>Add city</DialogTitle>
                 <DialogContent>
+                    <DialogContentText>
+                        It can be difficult to add a city due to the OpenCage API. Try searching like this: City, Country/State
+                    </DialogContentText>
+
                     <TextField
                         label = "City name"
                         variant = "outlined"

@@ -30,7 +30,10 @@ export default props => {
                                 key = {index} 
                                 city = {city}
                                 onClick = {_ => appStateC.handleCityClicked(index)} 
-                                removeCity = {_ => appStateC.removeCity(index)}
+                                removeCity = {event => {
+                                    event.stopPropagation()
+                                    appStateC.removeCity(index)
+                                }}
                                 active = {index === appStateC.activeCity} 
                                 isFirst = {index === 0}
                             />
