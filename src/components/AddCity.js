@@ -55,6 +55,9 @@ export default props => {
 
         const extractedData = {
             name: city.components.city,
+            state: city.components.state,
+            country: city.components.country,
+            continent: city.components.continent,
             lat: city.geometry.lat,
             lon: city.geometry.lng
         }

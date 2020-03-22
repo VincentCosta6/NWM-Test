@@ -64,7 +64,7 @@ const City = props => {
                 </CardActionArea>
             }
             
-            <CardHeader title={props.city.name || "Fallbrook"} />
+            <CardHeader title={props.city.name || props.city.state || props.city.country || props.city.continent} />
         </Card>
     )
 }
