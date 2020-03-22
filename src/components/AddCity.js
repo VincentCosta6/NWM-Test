@@ -7,7 +7,6 @@ import {
     DialogTitle,
     DialogContent,
     DialogContentText,
-    Divider,
     DialogActions,
     CircularProgress
 } from "@material-ui/core"
@@ -48,6 +47,7 @@ export default props => {
             .catch(requestFailed)
     }
 
+    // Use the first result from geo api
     const requestSuccess = data => {
         console.log(data)
 
@@ -70,6 +70,8 @@ export default props => {
         setRequestLoading(false)
     }
 
+    // I have found that forward searching with this api can be very inaccurate. 
+    // Due to time contraints i did not give suggestions to users but have an easy way of doing so with Material-UI's Autocomplete component
     return (
         <>
             <Button variant = "contained" color = "primary" onClick = {_ => setDialogVisible(true)}>Add city</Button>

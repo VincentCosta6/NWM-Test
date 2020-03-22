@@ -17,10 +17,14 @@ export default props => {
     const [activeCity, setActiveCity] = useState(-1)
     const [activeCard, setActiveCard] = useState(-1)
 
+    // Grab city list from localStorage
+    // If nothing is there default to just the users location as an option
     const [cities, setCities] = useState([
         ...JSON.parse(localStorage.getItem("cities") || "[{ \"name\": \"My location\" }]")
     ])
 
+    // Whenever the active city changes go grab its data. 
+    // If its the first option we need to grab the users location
     useEffect(_ => {
         let latitude = null, longitude = null
 
@@ -81,16 +85,21 @@ export default props => {
         setRequestLoading(false)
     }
 
+    // Also handles if user clicks already active city then make it inactive, also inactivate the day thats clicked
     const handleCityClicked = index => {
         setActiveCard(-1)
         setActiveCity(index === activeCity ? -1 : index)
     }
 
+    // Show loading message while weather data is being fetched
     const _renderLoading = _ => {
         if(requestLoading) return <h2>Loading request...</h2>
         else return <CityInfo />
     }
 
+    // Decided to go with React Context to manage my data. 
+    // This project was relatively small and not too much data is being passed around. 
+    // Also due to time contraints 
     return (
         <div className="container">
             <AppStateContext.Provider value = {{ 

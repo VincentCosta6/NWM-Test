@@ -13,6 +13,8 @@ export default props => {
 
     const { city_name, timezone, country_code, state_code } = AppStateC.request
 
+    // If activeIndex falls outside of range of days then tell the user to select a day
+    // Otherwise render the expanded info here
     const _renderExpanded = _ => {
         if (AppStateC.activeCard < 0 || AppStateC.activeCard >= AppStateC.request.data.length) {
             return (
@@ -26,6 +28,7 @@ export default props => {
         }
     }
 
+    // If location is not shared dont bother rendering anything see my comment in Cities.js
     if(!LocationC.location) {
         return <></>
     }

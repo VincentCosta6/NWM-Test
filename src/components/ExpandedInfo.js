@@ -1,8 +1,19 @@
 import React from "react"
 
 export default props => {
-    const { max_temp, min_temp, weather, valid_date, wind_cdir_full, vis, uv, precip, sunrise_ts, sunset_ts } = props.data
-    const { description, icon } = weather
+    const { 
+        max_temp, 
+        min_temp, 
+        weather, 
+        wind_cdir_full, 
+        vis, 
+        uv, 
+        precip, 
+        sunrise_ts, 
+        sunset_ts 
+    } = props.data
+    
+    const { description } = weather
 
     const timestampToHourMin = timestamp => {
         const date = new Date(timestamp * 1000)

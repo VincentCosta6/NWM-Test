@@ -1,6 +1,6 @@
 import React from "react"
 
-export default props => {
+export default _ => {
     return (
         <header className = "header">
             <h1>Weather API</h1>
