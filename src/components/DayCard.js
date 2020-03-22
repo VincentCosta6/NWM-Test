@@ -32,7 +32,7 @@ export default props => {
         
         const date = new Date(strings[0], strings[1], strings[2])
         
-        return indexToDay[date.getDay()].substring(0, 3)
+        return indexToDay[(date.getDay() + 4) % 7].substring(0, 3)
     }
     
     const date_split = valid_date.split("-")
