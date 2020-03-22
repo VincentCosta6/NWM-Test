@@ -1,33 +1,45 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 
-import DayCard from "./DayCard"
+import Cities from "./Cities"
+import CityInfo from "./CityInfo"
 import ExpandedInfo from "./ExpandedInfo"
+
+import AppStateContext from "../contexts/app-state"
+import LocationContext from "../contexts/location"
 
 const base_url = "https://api.weatherbit.io/v2.0"
 
 const localData = {
-    use: true,
+    use: false,
 }
 
 export default props => {
+    const LocationC = useContext(LocationContext)
+
     const [request, setRequest] = useState({})
-    const [active, setActive] = useState(-1)
+
+    const [activeCity, setActiveCity] = useState(-1)
+    const [activeCard, setActiveCard] = useState(-1)
+
+    const [cities, setCities] = useState([
+        { name: "My location" }
+    ])
 
     useEffect(_ => {
-        if (props.location && props.location.coords && props.location.coords.latitude && props.location.coords.longitude) {
+        if (LocationC.location && LocationC.location.coords && LocationC.location.coords.latitude && LocationC.location.coords.longitude) {
             fetchData()
         }
-    }, [props, props.location])
+    }, [LocationC, LocationC.location])
 
     const fetchData = _ => {
-        const { latitude, longitude } = props.location.coords
+        const { latitude, longitude } = LocationC.location.coords
 
         if (localData.use) {
             console.log("Use local")
         }
         else {
             fetch(`${base_url}/forecast/daily?lat=${latitude}&lon=${longitude}&key=${window._key}`)
-                .then(req => 
+                .then(req =>
                     req.json()
                         .then(dataSuccess)
                         .catch(dataFailed)
@@ -37,8 +49,6 @@ export default props => {
     }
 
     const dataSuccess = data => {
-        console.log(data)
-
         setRequest(data)
     }
 
@@ -46,33 +56,40 @@ export default props => {
         console.log(err)
     }
 
+    const handleCityClicked = index => {
+        setActiveCard(-1)
+        setActiveCity(index === activeCity ? -1 : index)
+    }
+
     const _renderExpanded = _ => {
-        if(active < 0 || active >= request.data.length) {
-            return <h3>Click on a day to view more info</h3>
+        if (activeCard < 0 || activeCard >= request.data.length) {
+            return (
+                <div className="city-info-container">
+                    <h3>Click on a day to view more info</h3>
+                </div>
+            )
         }
         else {
-            return <ExpandedInfo active = {active} data = {request.data[active]} />
+            return <ExpandedInfo active={activeCard} data={request.data[activeCard]} />
         }
     }
 
-    const { city_name, timezone, country_code, state_code } = request
-
     return (
         <div className="container">
-            <h2>City: {city_name}</h2>
-            <h2>Timezone: {timezone}</h2>
-            <h2>Country: {country_code}</h2>
-            <h2>State: {state_code}</h2>
+            <AppStateContext.Provider value = {{ 
+                    activeCity, 
+                    activeCard, 
+                    setActiveCity, 
+                    setActiveCard, 
+                    cities, 
+                    handleCityClicked, 
+                    request, 
+                    setRequest 
+                }}>
+                <Cities />
 
-            <div className = "daily-cards">
-                <h2>16 day forecast</h2>
-                <div className = "daily-cards-container">
-                    {
-                        request.data && request.data.map((day, index) => <DayCard key = {index} data = {day} onClick = {_ => setActive(index === active ? -1 : index)} />)
-                    }
-                </div>
-                { _renderExpanded() }
-            </div>
+                <CityInfo _renderExpanded = {_renderExpanded} />
+            </AppStateContext.Provider>
         </div>
     )
 }

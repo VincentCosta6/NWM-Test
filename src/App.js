@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+import LocationContext from "./contexts/location"
+
 import Header from "./components/Header"
 import Container from "./components/Container"
 
-import { key } from "./api_key.json"
-
-window._key = key
+window._key = "ee335d2f11e14b208e0a1172aaec60e5"
 
 const locationSettings = {
     enableHighAccuracy: true
@@ -21,11 +21,6 @@ const App = _ => {
 
     const locationSuccess = location => {
         setLocation(location)
-
-        localStorage.setItem("location", JSON.stringify({
-            lat: location.coords.latitude,
-            lon: location.coords.longitude
-        }))
     }
 
     const locationFailure = err => {
@@ -36,7 +31,10 @@ const App = _ => {
     return (
         <div className="App">
             <Header />
-            <Container location = {location} />
+
+            <LocationContext.Provider value = {{ location, setLocation }}>
+                <Container />
+            </LocationContext.Provider>
         </div>
     )
 }
