@@ -7,13 +7,13 @@ import {
 } from "@material-ui/core"
 
 const indexToDay = {
-    0: "Sunday",
-    1: "Monday",
-    2: "Tuesday",
-    3: "Wednesday",
-    4: "Thursday",
-    5: "Friday",
-    6: "Saturday"
+    0: "Sun",
+    1: "Mon",
+    2: "Tue",
+    3: "Wed",
+    4: "Thu",
+    5: "Fri",
+    6: "Sat"
 }
 
 export default props => {
@@ -30,9 +30,9 @@ export default props => {
             console.error(`String received: ${yyyymmdd} is not proper format needs to be yyyy-mm-dd`)
         }
         
-        const date = new Date(strings[0], strings[1], strings[2])
+        const date = new Date(strings[0], strings[1] - 1, strings[2])
         
-        return indexToDay[(date.getDay() + 4) % 7].substring(0, 3)
+        return indexToDay[(date.getDay()]
     }
     
     const date_split = valid_date.split("-")
